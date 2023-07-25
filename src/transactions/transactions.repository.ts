@@ -24,4 +24,8 @@ export class TransactionsRepository {
         transactions.push(body);
         return `Successfully sent ${body.amount_money.amount}`;
     }
+
+    getAll() {
+        return transactions;
+    }
 }
