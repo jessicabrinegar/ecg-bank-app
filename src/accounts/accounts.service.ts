@@ -1,26 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { AccountsRepository } from './accounts.repository';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PostAccountDto } from './dtos/post-account.dto';
+import { Account } from './models/account.model';
 
 
 @Injectable()
 export class AccountsService {
-    accountsRepo: AccountsRepository;
+    private accounts: Account[] = [];
 
-    constructor(repo: AccountsRepository) {
-      this.accountsRepo = repo;
-    }
-
-    getAllAccounts() {
-        return this.accountsRepo.getAllAccounts();
+    getAllAccounts(): Account[] {
+        return this.accounts; 
     }
 
     getAccount(id: string) {
-        return this.accountsRepo.getAccount(id);
+        const account = this.accounts.find((account) => account.id === id);
+        if (!account) {
+            throw new NotFoundException(`No account with id ${id} was found.`)
+        }
+        return account;
     }
 
-    postAccount(body: PostAccountDto) {
-        console.log(body);
-        return this.accountsRepo.postAccount(body);
+    postAccount(body: PostAccountDto): string {
+        const account = body;
+        this.accounts.push(account);
+        return "Account created successfully."
     }
 }

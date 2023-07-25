@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
-import { BasicTransactionDto, SendTransactionDto } from './dtos/basic-transaction.dto';
+import { TransactionDto } from './dtos/transaction.dto';
 
 @Controller('accounts')
 export class TransactionsController {
@@ -12,17 +12,17 @@ export class TransactionsController {
     }
 
     @Post('/:id/transactions/add')
-    depositMoney(@Body() body: BasicTransactionDto) {
+    depositMoney(@Body() body: TransactionDto) {
         return this.transactionService.depositMoney(body);
     }
 
     @Post('/:id/transactions/withdraw')
-    withdrawMoney(@Body() body: BasicTransactionDto) {
+    withdrawMoney(@Body() body: TransactionDto) {
         return this.transactionService.withdrawMoney(body);
     }
 
     @Post('/:id/transactions/send')
-    sendMoney(@Body() body: SendTransactionDto) {
+    sendMoney(@Body() body: TransactionDto) {
         return this.transactionService.sendMoney(body);
     }
 }

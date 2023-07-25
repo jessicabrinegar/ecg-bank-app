@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TransactionsRepository } from './transactions.repository';
-import { BasicTransactionDto, SendTransactionDto } from './dtos/basic-transaction.dto';
+import { TransactionDto } from './dtos/transaction.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -14,15 +14,15 @@ export class TransactionsService {
         return this.transactionRepo.getAllFromAccount(id);
     }
 
-    depositMoney(body: BasicTransactionDto) {
+    depositMoney(body: TransactionDto) {
         return this.transactionRepo.depositMoney(body);
     }
 
-    withdrawMoney(body: BasicTransactionDto) {
+    withdrawMoney(body: TransactionDto) {
         return this.transactionRepo.withdrawMoney(body);
     }
 
-    sendMoney(body: SendTransactionDto) {
+    sendMoney(body: TransactionDto) {
         return this.transactionRepo.sendMoney(body);
     }
 

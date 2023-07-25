@@ -1,6 +1,4 @@
-// import { UUID } from "crypto";
-
-export class PostAccountDto {
+export interface Account {
     id: string;
     given_name: string;
     family_name: string;

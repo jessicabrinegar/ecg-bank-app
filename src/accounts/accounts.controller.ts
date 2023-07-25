@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { PostAccountDto } from './dtos/post-account.dto';
+import { isUUID } from 'src/utils/uuid.util';
 
 @Controller('accounts')
 export class AccountsController {
@@ -12,8 +13,8 @@ export class AccountsController {
     }
 
     @Get("/:id")
-    getAccount(id: string) {
-        return this.accountsService.getAccount(id);
+    getAccount(@Param() params: any) {
+        return this.accountsService.getAccount(params.id);
     }
 
     @Post()

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BasicTransactionDto } from './dtos/basic-transaction.dto';
-import { SendTransactionDto } from './dtos/basic-transaction.dto';
+import { TransactionDto } from './dtos/transaction.dto';
 
 const transactions = [];
 
@@ -10,17 +9,17 @@ export class TransactionsRepository {
         return transactions[id];
     }
 
-    depositMoney(body: BasicTransactionDto) {
+    depositMoney(body: TransactionDto) {
         transactions.push(body);
         return `Deposit of ${body.amount_money.amount} added successfully.`
     }
 
-    withdrawMoney(body: BasicTransactionDto) {
+    withdrawMoney(body: TransactionDto) {
         transactions.push(body);
         return `Withdrawal of ${body.amount_money.amount} withdrawn successfully.`
     }
 
-    sendMoney(body: SendTransactionDto) {
+    sendMoney(body: TransactionDto) {
         transactions.push(body);
         return `Successfully sent ${body.amount_money.amount}`;
     }
