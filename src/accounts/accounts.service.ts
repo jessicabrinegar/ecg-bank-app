@@ -14,14 +14,25 @@ export class AccountsService {
     getAccount(id: string) {
         const account = this.accounts.find((account) => account.id === id);
         if (!account) {
-            throw new NotFoundException(`No account with id ${id} was found.`)
+            throw new NotFoundException(`No account with ID ${id} was found.`)
         }
         return account;
     }
 
-    postAccount(body: PostAccountDto): string {
-        const account = body;
+    createAccount(account: Account): string {
         this.accounts.push(account);
-        return "Account created successfully."
+        return `Account with ID ${account.id} created successfully.`
+    }
+
+    removeMoney(id: string, amount: number) {
+        const account = this.accounts.find((account) => account.id === id);
+        account.balance.amount -= amount;
+        return console.log('removeMoney service fx called');
+    }
+
+    addMoney(id: string, amount: number) {
+        const account = this.accounts.find((account) => account.id === id);
+        account.balance.amount += amount;
+        return console.log('addMoney service fx called');
     }
 }

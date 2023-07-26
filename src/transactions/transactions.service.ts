@@ -1,32 +1,35 @@
-import { Injectable } from '@nestjs/common';
-import { TransactionsRepository } from './transactions.repository';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { TransactionDto } from './dtos/transaction.dto';
+import { Transaction } from './models/transaction.model';
 
 @Injectable()
 export class TransactionsService {
-    transactionRepo: TransactionsRepository;
-
-    constructor(repo: TransactionsRepository) {
-        this.transactionRepo = repo;
-    }
+    private transactions: Transaction[] = [];
 
     getAllFromAccount(id: string) {
-        return this.transactionRepo.getAllFromAccount(id);
+        const transactions = this.transactions.filter((entry) => entry.account_id === id);
+        // if (!transactions) {
+        //     throw new NotFoundException(`No transactions found for account with id ${id}.`);
+        // }
+        return transactions;
     }
 
-    depositMoney(body: TransactionDto) {
-        return this.transactionRepo.depositMoney(body);
+    depositMoney(body: Transaction) {
+        this.transactions.push(body);
+        return `Deposit of ${body.amount_money.amount} added successfully.`
     }
 
-    withdrawMoney(body: TransactionDto) {
-        return this.transactionRepo.withdrawMoney(body);
+    withdrawMoney(body: Transaction) {
+        this.transactions.push(body);
+        return `Withdrawal of ${body.amount_money.amount} withdrawn successfully.`
     }
 
-    sendMoney(body: TransactionDto) {
-        return this.transactionRepo.sendMoney(body);
+    sendMoney(body: Transaction) {
+        this.transactions.push(body);
+        return `Successfully sent ${body.amount_money.amount}`;
     }
 
-    getAllTransactions() {
-        return this.transactionRepo.getAll();
+    getAll() {
+        return this.transactions;
     }
 }

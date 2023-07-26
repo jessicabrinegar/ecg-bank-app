@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { PostAccountDto } from './dtos/post-account.dto';
-import { isUUID } from 'src/utils/uuid.util';
+// import { isUUID } from 'src/utils/uuid.util';
+import { randomUUID } from 'crypto';
+import { Account } from './models/account.model';
 
 @Controller('accounts')
 export class AccountsController {
@@ -13,12 +15,17 @@ export class AccountsController {
     }
 
     @Get("/:id")
-    getAccount(@Param() params: any) {
-        return this.accountsService.getAccount(params.id);
+    getAccount(@Param('id') id: string) {
+        return this.accountsService.getAccount(id);
     }
 
     @Post()
     createAccount(@Body() body: PostAccountDto) {
-        return this.accountsService.postAccount(body);
+        const account: Account = {
+            id: randomUUID(),
+            ...body,
+        };
+        console.log(account.balance, typeof account.balance);
+        return this.accountsService.createAccount(account);
     }
 }

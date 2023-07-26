@@ -7,6 +7,6 @@ export class AllTransactionsController {
 
     @Get()
     getAllTransactions() {
-        return this.transactionService.getAllTransactions();
+        return this.transactionService.getAll();
     }
 }
