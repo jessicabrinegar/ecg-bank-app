@@ -9,7 +9,6 @@ import { TransactionDto } from 'src/transactions/dtos/transaction.dto';
 @Controller('accounts')
 export class AccountsController {
     constructor(private accountsService: AccountsService) {}
-    // get all accounts
     @Get()
     getAllAccounts() {
         return this.accountsService.getAllAccounts();
