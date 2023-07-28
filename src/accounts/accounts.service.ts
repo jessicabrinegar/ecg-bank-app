@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PostAccountDto } from './dtos/post-account.dto';
+// import { PostAccountDto } from './dtos/post-account.dto';
 import { Account } from './models/account.model';
 
 
@@ -32,6 +32,7 @@ export class AccountsService {
 
     addMoney(id: string, amount: number) {
         const account = this.accounts.find((account) => account.id === id);
+        console.log(this.accounts);
         account.balance.amount += amount;
         return console.log('addMoney service fx called');
     }

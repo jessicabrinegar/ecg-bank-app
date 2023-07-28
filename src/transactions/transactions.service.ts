@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { TransactionDto } from './dtos/transaction.dto';
+import { Injectable } from '@nestjs/common';
+// import { TransactionDto } from './dtos/transaction.dto';
 import { Transaction } from './models/transaction.model';
 
 @Injectable()

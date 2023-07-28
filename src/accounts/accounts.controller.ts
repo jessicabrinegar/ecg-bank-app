@@ -4,6 +4,7 @@ import { PostAccountDto } from './dtos/post-account.dto';
 // import { isUUID } from 'src/utils/uuid.util';
 import { randomUUID } from 'crypto';
 import { Account } from './models/account.model';
+import { TransactionDto } from 'src/transactions/dtos/transaction.dto';
 
 @Controller('accounts')
 export class AccountsController {
