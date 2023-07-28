@@ -7,11 +7,11 @@ import { Account } from './models/account.model';
 export class AccountsService {
     private accounts: Account[] = [];
 
-    getAllAccounts(): Account[] {
+    findAll(): Account[] {
         return this.accounts; 
     }
 
-    getAccount(id: string) {
+    findByID(id: string) {
         const account = this.accounts.find((account) => account.id === id);
         if (!account) {
             throw new NotFoundException(`No account with ID ${id} was found.`)
@@ -19,18 +19,18 @@ export class AccountsService {
         return account;
     }
 
-    createAccount(account: Account): string {
+    create(account: Account): string {
         this.accounts.push(account);
         return `Account with ID ${account.id} created successfully.`
     }
 
-    removeMoney(id: string, amount: number) {
+    withdraw(id: string, amount: number) {
         const account = this.accounts.find((account) => account.id === id);
         account.balance.amount -= amount;
         return console.log('removeMoney service fx called');
     }
 
-    addMoney(id: string, amount: number) {
+    deposit(id: string, amount: number) {
         const account = this.accounts.find((account) => account.id === id);
         console.log(this.accounts);
         account.balance.amount += amount;

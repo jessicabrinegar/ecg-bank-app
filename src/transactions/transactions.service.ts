@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
-// import { TransactionDto } from './dtos/transaction.dto';
 import { Transaction } from './models/transaction.model';
 
 @Injectable()
 export class TransactionsService {
     private transactions: Transaction[] = [];
 
-    getAllFromAccount(id: string) {
+    findAll(): Transaction[] {
+        return this.transactions;
+    }
+
+    findAllInAccount(id: string) {
         const transactions = this.transactions.filter((entry) => entry.account_id === id);
         // if (!transactions) {
         //     throw new NotFoundException(`No transactions found for account with id ${id}.`);
@@ -14,22 +17,18 @@ export class TransactionsService {
         return transactions;
     }
 
-    depositMoney(body: Transaction) {
+    deposit(body: Transaction) {
         this.transactions.push(body);
         return `Deposit of ${body.amount_money.amount} added successfully.`
     }
 
-    withdrawMoney(body: Transaction) {
+    withdraw(body: Transaction) {
         this.transactions.push(body);
         return `Withdrawal of ${body.amount_money.amount} withdrawn successfully.`
     }
 
-    sendMoney(body: Transaction) {
+    send(body: Transaction) {
         this.transactions.push(body);
         return `Successfully sent ${body.amount_money.amount}`;
-    }
-
-    getAll() {
-        return this.transactions;
     }
 }
