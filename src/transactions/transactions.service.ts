@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Transaction } from './models/transaction.model';
 
 @Injectable()
@@ -11,24 +11,24 @@ export class TransactionsService {
 
     findAllInAccount(id: string) {
         const transactions = this.transactions.filter((entry) => entry.account_id === id);
-        // if (!transactions) {
-        //     throw new NotFoundException(`No transactions found for account with id ${id}.`);
-        // }
+        if (!transactions) {
+            throw new NotFoundException(`No transactions found for account with id ${id}.`);
+        }
         return transactions;
     }
 
-    deposit(body: Transaction) {
-        this.transactions.push(body);
-        return `Deposit of ${body.amount_money.amount} added successfully.`
+    deposit(data: Transaction) {
+        this.transactions.push(data);
+        return `${data.amount_money.amount} deposited successfully.`
     }
 
-    withdraw(body: Transaction) {
-        this.transactions.push(body);
-        return `Withdrawal of ${body.amount_money.amount} withdrawn successfully.`
+    withdraw(data: Transaction) {
+        this.transactions.push(data);
+        return `${data.amount_money.amount} withdrawn successfully.`
     }
 
-    send(body: Transaction) {
-        this.transactions.push(body);
-        return `Successfully sent ${body.amount_money.amount}`;
+    send(data: Transaction) {
+        this.transactions.push(data);
+        return `${data.amount_money.amount} successfully sent.`;
     }
 }

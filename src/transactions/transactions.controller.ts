@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Param, NotFoundException, NotAcceptableException } from '@nestjs/common';
+import { Controller, Get, Post, Body, NotAcceptableException } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
-import { TransactionDto } from './dtos/transaction.dto';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { randomUUID } from 'crypto';
-import { isUUID } from 'src/utils/uuid.util';
+import { IsParamUUID } from 'src/utils/is-param-uuid.decorator';
 import { Transaction } from './models/transaction.model';
+import { TransactionDto } from './dtos/transaction.dto';
 
 @Controller('accounts/:id/transactions')
 export class TransactionsController {
@@ -14,18 +14,13 @@ export class TransactionsController {
         ) {}
 
     @Get()
-    findAllInAccount(@Param('id') id: string) {
-        if(!isUUID(id)) {
-            throw new NotAcceptableException('The account ID must be a 36-character UUID');
-        }
+    findAllInAccount(@IsParamUUID() id: string) {
+        this.accountService.findByID(id);
         return this.transactionService.findAllInAccount(id);
     }
 
     @Post('add')
-    deposit(@Param('id') id: string, @Body() body: TransactionDto) {
-        if(!isUUID(id)) {
-            throw new NotAcceptableException('The account ID must be a 36-character UUID');
-        }
+    deposit(@IsParamUUID() id: string, @Body() body: TransactionDto) {
         this.accountService.deposit(id, body.amount_money.amount);
         const transaction: Transaction = {
             id: randomUUID(),
@@ -37,10 +32,7 @@ export class TransactionsController {
     }
 
     @Post('withdraw')
-    withdraw(@Param('id') id: string, @Body() body: TransactionDto) {
-        if(!isUUID(id)) {
-            throw new NotAcceptableException('The account ID must be a 36-character UUID');
-        }
+    withdraw(@IsParamUUID() id: string, @Body() body: TransactionDto) {
         this.accountService.withdraw(id, body.amount_money.amount);
         const transaction: Transaction = {
             id: randomUUID(),
@@ -52,12 +44,13 @@ export class TransactionsController {
     }
 
     @Post('send')
-    send(@Param('id') id: string, @Body() body: TransactionDto) {
-        if(!isUUID(id)) {
-            throw new NotAcceptableException('The account ID must be a 36-character UUID');
+    send(@IsParamUUID() id: string, @Body() body: TransactionDto) {
+        const amount = body.amount_money.amount;
+        if (amount < 1 || amount > 1000) {
+            throw new NotAcceptableException('Amount sent must be between 1 and 1,000 USD.')
         }
-        this.accountService.withdraw(id, body.amount_money.amount);
-        this.accountService.deposit(body.target_account_id, body.amount_money.amount);
+        this.accountService.withdraw(id, amount);
+        this.accountService.deposit(body.target_account_id, amount);
         const transaction: Transaction = {
             id: randomUUID(),
             ...body,

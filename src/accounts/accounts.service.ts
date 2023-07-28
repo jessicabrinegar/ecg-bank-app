@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 // import { PostAccountDto } from './dtos/post-account.dto';
 import { Account } from './models/account.model';
 
@@ -14,7 +14,7 @@ export class AccountsService {
     findByID(id: string) {
         const account = this.accounts.find((account) => account.id === id);
         if (!account) {
-            throw new NotFoundException(`No account with ID ${id} was found.`)
+            throw new NotFoundException(`No account found with ID ${id}.`)
         }
         return account;
     }
@@ -25,15 +25,16 @@ export class AccountsService {
     }
 
     withdraw(id: string, amount: number) {
-        const account = this.accounts.find((account) => account.id === id);
-        account.balance.amount -= amount;
-        return console.log('removeMoney service fx called');
+        const account = this.findByID(id);
+        const current_balance = account.balance.amount;
+        if(current_balance < amount) {
+            throw new NotAcceptableException('Amount exceeds the current balance of the account.')
+        }
+        return account.balance.amount -= amount;
     }
 
     deposit(id: string, amount: number) {
-        const account = this.accounts.find((account) => account.id === id);
-        console.log(this.accounts);
-        account.balance.amount += amount;
-        return console.log('addMoney service fx called');
+        const account = this.findByID(id);
+        return account.balance.amount += amount;
     }
 }
