@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseUUIDPipe } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { randomUUID } from 'crypto';
-import { IsParamUUID } from 'src/utils/is-param-uuid.decorator';
 import { Account } from './models/account.model';
 import { PostAccountDto } from './dtos/post-account.dto';
 import { AccountValidationPipe } from './pipes/account.pipe';
@@ -15,13 +14,12 @@ export class AccountsController {
     }
 
     @Get("/:id")
-    findByID(@IsParamUUID() id: string): Account {
+    findByID(@Param('id', new ParseUUIDPipe()) id: string): Account {
         return this.accountsService.findByID(id);
     }
 
     @Post()
-    @UsePipes(AccountValidationPipe)
-    create(@Body() body: PostAccountDto) {
+    create(@Body(AccountValidationPipe) body: PostAccountDto) {
         body.balance.currency = body.balance.currency.toUpperCase();
         const account: Account = {
             id: randomUUID(),

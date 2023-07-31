@@ -1,11 +1,11 @@
 // required-fields.pipe.ts
-import { ArgumentMetadata, Injectable, PipeTransform, BadRequestException } from '@nestjs/common';
+import { Injectable, PipeTransform, BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class AccountValidationPipe implements PipeTransform {
   private readonly allowedCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
   
-  transform(value: any, metadata: ArgumentMetadata) {
+  transform(value: any) {
     if (!value.given_name) {
       throw new BadRequestException('Missing given_name field.');
     }

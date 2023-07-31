@@ -1,8 +1,7 @@
-import { Controller, Get, Post, Body, NotAcceptableException, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Body, NotAcceptableException, Param, ParseUUIDPipe } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { randomUUID } from 'crypto';
-import { IsParamUUID } from 'src/utils/is-param-uuid.decorator';
 import { Transaction } from './models/transaction.model';
 import { TransactionDto } from './dtos/transaction.dto';
 import { TransactionValidationPipe } from './pipes/transaction.pipe';
@@ -16,14 +15,14 @@ export class TransactionsController {
         ) {}
 
     @Get()
-    findAllInAccount(@IsParamUUID() id: string) {
+    findAllInAccount(@Param('id', new ParseUUIDPipe()) id: string) {
         this.accountService.findByID(id);
         return this.transactionService.findAllInAccount(id);
     }
 
     @Post('add')
-    @UsePipes(TransactionValidationPipe)
-    deposit(@IsParamUUID() id: string, @Body() body: TransactionDto) {
+    // @UsePipes(TransactionValidationPipe)
+    deposit(@Param('id', ParseUUIDPipe) id: string, @Body(TransactionValidationPipe) body: TransactionDto) {
         this.accountService.deposit(id, body.amount_money.amount);
         const transaction: Transaction = {
             id: randomUUID(),
@@ -35,8 +34,7 @@ export class TransactionsController {
     }
 
     @Post('withdraw')
-    @UsePipes(TransactionValidationPipe)
-    withdraw(@IsParamUUID() id: string, @Body() body: TransactionDto) {
+    withdraw(@Param('id', new ParseUUIDPipe()) id: string, @Body(TransactionValidationPipe) body: TransactionDto) {
         this.accountService.withdraw(id, body.amount_money.amount);
         const transaction: Transaction = {
             id: randomUUID(),
@@ -48,8 +46,9 @@ export class TransactionsController {
     }
 
     @Post('send')
-    @UsePipes(TransactionValidationPipe, SendValidationPipe)
-    send(@IsParamUUID() id: string, @Body() body: TransactionDto) {
+    // @UsePipes(TransactionValidationPipe)
+    // @UsePipes(SendValidationPipe)
+    send(@Param('id', new ParseUUIDPipe()) id: string, @Body(TransactionValidationPipe, SendValidationPipe) body: TransactionDto) {
         const amount = body.amount_money.amount;
         if (amount < 1 || amount > 1000) {
             throw new NotAcceptableException('Amount sent must be between 1 and 1,000 USD.')

@@ -1,10 +1,12 @@
-import { Injectable, PipeTransform, BadRequestException } from '@nestjs/common';
+import { Injectable, PipeTransform, BadRequestException, ArgumentMetadata } from '@nestjs/common';
+import { TransactionDto } from '../dtos/transaction.dto';
 
 @Injectable()
 export class TransactionValidationPipe implements PipeTransform {
   private readonly allowedCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
 
-  transform(value: any) {
+  transform(value: TransactionDto, metadata: ArgumentMetadata) {
+    console.log(metadata);
     if (!value.amount_money) {
       console.log(value.amount_money);
       throw new BadRequestException('Missing amount_money field.');
