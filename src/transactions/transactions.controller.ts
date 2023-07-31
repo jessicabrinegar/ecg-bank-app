@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, NotAcceptableException } from '@nestjs/common';
+import { Controller, Get, Post, Body, NotAcceptableException, UsePipes } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { randomUUID } from 'crypto';
 import { IsParamUUID } from 'src/utils/is-param-uuid.decorator';
 import { Transaction } from './models/transaction.model';
 import { TransactionDto } from './dtos/transaction.dto';
+import { TransactionValidationPipe } from './pipes/transaction.pipe';
+import { SendValidationPipe } from './pipes/transaction-send.pipe';
 
 @Controller('accounts/:id/transactions')
 export class TransactionsController {
@@ -20,6 +22,7 @@ export class TransactionsController {
     }
 
     @Post('add')
+    @UsePipes(TransactionValidationPipe)
     deposit(@IsParamUUID() id: string, @Body() body: TransactionDto) {
         this.accountService.deposit(id, body.amount_money.amount);
         const transaction: Transaction = {
@@ -32,6 +35,7 @@ export class TransactionsController {
     }
 
     @Post('withdraw')
+    @UsePipes(TransactionValidationPipe)
     withdraw(@IsParamUUID() id: string, @Body() body: TransactionDto) {
         this.accountService.withdraw(id, body.amount_money.amount);
         const transaction: Transaction = {
@@ -44,6 +48,7 @@ export class TransactionsController {
     }
 
     @Post('send')
+    @UsePipes(TransactionValidationPipe, SendValidationPipe)
     send(@IsParamUUID() id: string, @Body() body: TransactionDto) {
         const amount = body.amount_money.amount;
         if (amount < 1 || amount > 1000) {

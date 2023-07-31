@@ -30,11 +30,13 @@ export class AccountsService {
         if(current_balance < amount) {
             throw new NotAcceptableException('Amount exceeds the current balance of the account.')
         }
-        return account.balance.amount -= amount;
+        account.balance.amount -= amount;
+        return `${amount} withdrawn successfully.`
     }
 
     deposit(id: string, amount: number) {
         const account = this.findByID(id);
-        return account.balance.amount += amount;
+        account.balance.amount += amount;
+        return `${amount} deposited successfully.`
     }
 }

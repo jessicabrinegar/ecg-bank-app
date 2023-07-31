@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UsePipes } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { randomUUID } from 'crypto';
 import { IsParamUUID } from 'src/utils/is-param-uuid.decorator';
 import { Account } from './models/account.model';
 import { PostAccountDto } from './dtos/post-account.dto';
+import { AccountValidationPipe } from './pipes/account.pipe';
 
 @Controller('accounts')
 export class AccountsController {
@@ -19,7 +20,9 @@ export class AccountsController {
     }
 
     @Post()
+    @UsePipes(AccountValidationPipe)
     create(@Body() body: PostAccountDto) {
+        body.balance.currency = body.balance.currency.toUpperCase();
         const account: Account = {
             id: randomUUID(),
             ...body,
