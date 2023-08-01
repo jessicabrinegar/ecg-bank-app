@@ -6,20 +6,28 @@ export class TransactionValidationPipe implements PipeTransform {
   private readonly allowedCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
 
   transform(value: TransactionDto, metadata: ArgumentMetadata) {
-    if (!value.amount_money) {
-      console.log(value.amount_money);
-      throw new BadRequestException('Missing amount_money field.');
+    const { target_account_id, note, amount_money } = value;
+
+    if (
+      !amount_money ||
+      typeof amount_money !== 'object' ||
+      amount_money.amount <= 0 ||
+      typeof amount_money.amount !== 'number' ||
+      typeof amount_money.currency !== 'string'
+    ) {
+      throw new BadRequestException('Invalid amount_money field. It should be an object with amount and currency fields. Amount should be a number greater than 0. Currency should be a string.');
     }
-    if(!value.amount_money.amount) {
-        throw new BadRequestException('Missing amount field.');
-    }
-    if(!value.amount_money.currency) {
-        throw new BadRequestException('Missing currency field.')
-    }
-    const currency = value.amount_money.currency.toUpperCase();
+
+    const currency = amount_money.currency.toUpperCase();
+
     if (!this.allowedCurrencies.includes(currency)) {
       throw new BadRequestException(`Invalid currency. Supported currencies are: ${this.allowedCurrencies.join(', ')}`);
     }
+
+    if (note !== undefined && typeof note !== 'string') {
+      throw new BadRequestException('Invalid note. It should be a string.');
+    }
+
     return value;
   }
 }

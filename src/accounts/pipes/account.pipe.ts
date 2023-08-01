@@ -6,28 +6,35 @@ export class AccountValidationPipe implements PipeTransform {
   private readonly allowedCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
   
   transform(value: any) {
-    if (!value.given_name) {
-      throw new BadRequestException('Missing given_name field.');
+    const {given_name, family_name, email_address, balance} = value;
+
+    if (!given_name || typeof given_name !== 'string') {
+      throw new BadRequestException('Invalid given_name. Must be included as a string.');
     }
-    if (!value.family_name) {
-      throw new BadRequestException('Missing family_name field.');
+
+    if (!family_name || typeof family_name !== 'string') {
+      throw new BadRequestException('Invalid family_name. Must be included as a string.');
     }
-    if (!value.email_address) {
-      throw new BadRequestException('Missing email_address field.');
+
+    if (!email_address || typeof email_address !== 'string') {
+      throw new BadRequestException('Invalid email_address. Must be included as a string.');
     }
-    if (!value.balance) {
-      throw new BadRequestException('Missing balance field.');
+
+    if (
+      !balance ||
+      typeof balance !== 'object' ||
+      typeof balance.amount !== 'number' ||
+      balance.amount < 0 ||
+      typeof balance.currency !== 'string'
+    ) {
+      throw new BadRequestException('Invalid balance. It should be an object with an amount and currency field. Amount should be a non-negative number and currency should be a string.');
     }
-    if (typeof value.balance.amount != 'number' || value.balance.amount < 0) {
-      throw new BadRequestException('Must provide an amount field that is a non-negative number. If there is no current balance, set amount to 0');
-    }
-    if (!value.balance.currency) {
-      throw new BadRequestException('Missing currency field.');
-    }
+
     const currency = value.balance.currency.toUpperCase();
     if (!this.allowedCurrencies.includes(currency)) {
       throw new BadRequestException(`Invalid currency. Supported currencies are: ${this.allowedCurrencies.join(', ')}`);
     }
+
     return value;
   }
 }
