@@ -6,7 +6,6 @@ export class TransactionValidationPipe implements PipeTransform {
   private readonly allowedCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
 
   transform(value: TransactionDto, metadata: ArgumentMetadata) {
-    console.log(metadata);
     if (!value.amount_money) {
       console.log(value.amount_money);
       throw new BadRequestException('Missing amount_money field.');
