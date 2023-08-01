@@ -4,9 +4,16 @@ import { TransactionDto } from '../dtos/transaction.dto';
 @Injectable()
 export class TransactionValidationPipe implements PipeTransform {
   private readonly allowedCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
+  private readonly allowedFields = ['note', 'amount_money', 'target_account_id'];
 
   transform(value: TransactionDto, metadata: ArgumentMetadata) {
-    const { target_account_id, note, amount_money } = value;
+    const { note, amount_money } = value;
+
+    for (const field of Object.keys(value)) {
+      if (!this.allowedFields.includes(field)) {
+        throw new BadRequestException(`Invalid field: ${field}`);
+      }
+    }
 
     if (
       !amount_money ||

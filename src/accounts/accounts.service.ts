@@ -24,6 +24,17 @@ export class AccountsService {
         return `Account with ID ${account.id} created successfully.`
     }
 
+    update(id: string, data: Partial<Account>): Account {
+        const account = this.findByID(id);
+        for (const key of Object.keys(data)) {
+            // Only update the field if it exists in the account object
+            if (account.hasOwnProperty(key)) {
+                account[key] = data[key];
+            }
+        }
+        return account;
+    }
+
     withdraw(id: string, amount: number) {
         const account = this.findByID(id);
         const current_balance = account.balance.amount;

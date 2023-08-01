@@ -21,7 +21,6 @@ export class TransactionsController {
     }
 
     @Post('add')
-    // @UsePipes(TransactionValidationPipe)
     deposit(@Param('id', ParseUUIDPipe) id: string, @Body(TransactionValidationPipe) body: TransactionDto) {
         this.accountService.deposit(id, body.amount_money.amount);
         const transaction: Transaction = {
@@ -46,8 +45,6 @@ export class TransactionsController {
     }
 
     @Post('send')
-    // @UsePipes(TransactionValidationPipe)
-    // @UsePipes(SendValidationPipe)
     send(@Param('id', new ParseUUIDPipe()) id: string, @Body(TransactionValidationPipe, SendValidationPipe) body: TransactionDto) {
         const amount = body.amount_money.amount;
         if (amount < 1 || amount > 1000) {
