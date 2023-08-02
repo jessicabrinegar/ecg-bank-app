@@ -1,12 +1,19 @@
 // required-fields.pipe.ts
 import { Injectable, PipeTransform, BadRequestException } from '@nestjs/common';
+import { PostAccountDto } from '../dtos/post-account.dto';
+
+export function isEmailAddress(str: string) {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailPattern.test(str);
+}
+
 
 @Injectable()
 export class AccountValidationPipe implements PipeTransform {
   private readonly allowedCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
   private readonly allowedFields = ['given_name', 'family_name', 'email_address', 'balance', 'note'];
   
-  transform(value: any) {
+  transform(value: PostAccountDto) {
     const {given_name, family_name, email_address, note, balance} = value;
 
     for (const field of Object.keys(value)) {
@@ -16,6 +23,7 @@ export class AccountValidationPipe implements PipeTransform {
     }
 
     if (!given_name || typeof given_name !== 'string') {
+      console.log(value);
       throw new BadRequestException('Invalid given_name. Must be included as a string.');
     }
 
@@ -25,6 +33,15 @@ export class AccountValidationPipe implements PipeTransform {
 
     if (!email_address || typeof email_address !== 'string') {
       throw new BadRequestException('Invalid email_address. Must be included as a string.');
+    }
+    
+    if (!isEmailAddress(email_address)) {
+      throw new BadRequestException('Invalid email_address. Must be of the following format: username@domain.extension');
+    }
+
+    if (note && typeof note !== 'string') {
+      throw new BadRequestException('Invalid note. Must be a string.');
+
     }
 
     if (
@@ -37,8 +54,9 @@ export class AccountValidationPipe implements PipeTransform {
       throw new BadRequestException('Invalid balance. It should be an object with an amount and currency field. Amount should be a non-negative number and currency should be a string.');
     }
 
-    const currency = value.balance.currency.toUpperCase();
-    if (!this.allowedCurrencies.includes(currency)) {
+    value.balance.currency = value.balance.currency.toUpperCase();
+
+    if (!this.allowedCurrencies.includes(value.balance.currency)) {
       throw new BadRequestException(`Invalid currency. Supported currencies are: ${this.allowedCurrencies.join(', ')}`);
     }
 

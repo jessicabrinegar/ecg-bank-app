@@ -21,7 +21,6 @@ export class AccountsController {
 
     @Post()
     create(@Body(AccountValidationPipe) body: PostAccountDto) {
-        body.balance.currency = body.balance.currency.toUpperCase();
         const account: Account = {
             id: randomUUID(),
             ...body,

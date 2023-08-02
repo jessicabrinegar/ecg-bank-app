@@ -4,8 +4,8 @@ import { AccountsService } from 'src/accounts/accounts.service';
 import { randomUUID } from 'crypto';
 import { Transaction } from './models/transaction.model';
 import { TransactionDto } from './dtos/transaction.dto';
-import { TransactionValidationPipe } from './pipes/transaction.pipe';
-import { SendValidationPipe } from './pipes/transaction-send.pipe';
+import { TransactionValidationPipe } from './pipes/transaction-validation.pipe';
+import { SendValidationPipe } from './pipes/send-validation.pipe';
 
 @Controller('accounts/:id/transactions')
 export class TransactionsController {
@@ -22,10 +22,13 @@ export class TransactionsController {
 
     @Post('add')
     deposit(@Param('id', ParseUUIDPipe) id: string, @Body(TransactionValidationPipe) body: TransactionDto) {
+        if (body.target_account_id) {
+            body.target_account_id = null;
+        }
         this.accountService.deposit(id, body.amount_money.amount);
         const transaction: Transaction = {
             id: randomUUID(),
-            target_account_id: null,
+            // target_account_id: null,
             ...body,
             account_id: id,
         };
@@ -34,10 +37,12 @@ export class TransactionsController {
 
     @Post('withdraw')
     withdraw(@Param('id', new ParseUUIDPipe()) id: string, @Body(TransactionValidationPipe) body: TransactionDto) {
+        if (body.target_account_id) {
+            body.target_account_id = null;
+        }
         this.accountService.withdraw(id, body.amount_money.amount);
         const transaction: Transaction = {
             id: randomUUID(),
-            target_account_id: null,
             ...body,
             account_id: id,
         };

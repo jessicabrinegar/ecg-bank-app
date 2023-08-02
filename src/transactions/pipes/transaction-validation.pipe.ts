@@ -8,7 +8,7 @@ export class TransactionValidationPipe implements PipeTransform {
 
   transform(value: TransactionDto, metadata: ArgumentMetadata) {
     const { note, amount_money } = value;
-
+    // Can use a global ValidationPipe for this (class-validator)
     for (const field of Object.keys(value)) {
       if (!this.allowedFields.includes(field)) {
         throw new BadRequestException(`Invalid field: ${field}`);

@@ -1,5 +1,6 @@
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 import { PostAccountDto } from '../dtos/post-account.dto';
+import { isEmailAddress } from './account.pipe';
 
 @Injectable()
 export class AccountUpdateValidationPipe implements PipeTransform {
@@ -11,9 +12,13 @@ export class AccountUpdateValidationPipe implements PipeTransform {
         throw new BadRequestException(`Invalid field: ${field}`);
       }
 
-      if (typeof value[field] !== 'string') {
-        throw new BadRequestException(`Field ${field} should be a string`);
+      if (!value[field] || typeof value[field] !== 'string') {
+        throw new BadRequestException(`Field ${field} should be included as a string`);
       }
+
+      if (field === 'email_address' && !isEmailAddress(value[field])) {
+        throw new BadRequestException(`Field ${field} must be of the following format: username@domain.extension`);
+      } 
     }
 
     return value;
