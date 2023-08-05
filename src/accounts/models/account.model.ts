@@ -1,5 +1,3 @@
-// import { UUID } from "crypto";
-
 export interface Account {
     id: string;
     given_name: string;

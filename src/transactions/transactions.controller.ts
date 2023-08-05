@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, NotAcceptableException, Param, ParseUUIDPi
 import { TransactionsService } from './transactions.service';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { randomUUID } from 'crypto';
-import { Transaction } from './models/transaction.model';
 import { TransactionDto } from './dtos/transaction.dto';
 import { TransactionValidationPipe } from './pipes/transaction-validation.pipe';
 import { SendValidationPipe } from './pipes/send-validation.pipe';
@@ -16,7 +15,7 @@ export class TransactionsController {
 
     @Get()
     findAllInAccount(@Param('id', new ParseUUIDPipe()) id: string) {
-        this.accountService.findByID(id);
+        this.accountService.findById(id);
         return this.transactionService.findAllInAccount(id);
     }
 
@@ -26,7 +25,7 @@ export class TransactionsController {
             body.target_account_id = null;
         }
         this.accountService.deposit(id, body.amount_money.amount);
-        const transaction: Transaction = {
+        const transaction: TransactionDto = {
             id: randomUUID(),
             // target_account_id: null,
             ...body,
@@ -41,7 +40,7 @@ export class TransactionsController {
             body.target_account_id = null;
         }
         this.accountService.withdraw(id, body.amount_money.amount);
-        const transaction: Transaction = {
+        const transaction: TransactionDto = {
             id: randomUUID(),
             ...body,
             account_id: id,
@@ -57,7 +56,7 @@ export class TransactionsController {
         }
         this.accountService.withdraw(id, amount);
         this.accountService.deposit(body.target_account_id, amount);
-        const transaction: Transaction = {
+        const transaction: TransactionDto = {
             id: randomUUID(),
             ...body,
             account_id: id,

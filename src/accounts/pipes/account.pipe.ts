@@ -1,6 +1,6 @@
 // required-fields.pipe.ts
 import { Injectable, PipeTransform, BadRequestException } from '@nestjs/common';
-import { PostAccountDto } from '../dtos/post-account.dto';
+import { AccountDto } from '../dtos/account.dto';
 
 export function isEmailAddress(str: string) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,7 +13,7 @@ export class AccountValidationPipe implements PipeTransform {
   private readonly allowedCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY'];
   private readonly allowedFields = ['given_name', 'family_name', 'email_address', 'balance', 'note'];
   
-  transform(value: PostAccountDto) {
+  transform(value: AccountDto) {
     const {given_name, family_name, email_address, note, balance} = value;
 
     for (const field of Object.keys(value)) {

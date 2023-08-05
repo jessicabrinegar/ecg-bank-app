@@ -1,17 +1,16 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
-// import { PostAccountDto } from './dtos/post-account.dto';
-import { Account } from './models/account.model';
+import { AccountDto } from './dtos/account.dto';
 
 
 @Injectable()
 export class AccountsService {
-    private accounts: Account[] = [];
+    private accounts: AccountDto[] = [];
 
-    findAll(): Account[] {
+    findAll(): AccountDto[] {
         return this.accounts; 
     }
 
-    findByID(id: string) {
+    findById(id: string) {
         const account = this.accounts.find((account) => account.id === id);
         if (!account) {
             throw new NotFoundException(`No account found with ID ${id}.`)
@@ -19,35 +18,50 @@ export class AccountsService {
         return account;
     }
 
-    create(account: Account): string {
+    create(account: AccountDto): AccountDto {
         this.accounts.push(account);
-        return `Account with ID ${account.id} created successfully.`
-    }
-
-    update(id: string, data: Partial<Account>): Account {
-        const account = this.findByID(id);
-        for (const key of Object.keys(data)) {
-            // Only update the field if it exists in the account object
-            if (account.hasOwnProperty(key)) {
-                account[key] = data[key];
-            }
-        }
         return account;
     }
 
-    withdraw(id: string, amount: number) {
-        const account = this.findByID(id);
-        const current_balance = account.balance.amount;
+    update(id: string, data: Partial<AccountDto>): AccountDto {
+        // immutable data should not be changed. create & return new version of the data
+        const index = this.accounts.findIndex(account => account.id === id);
+        const updatedAccount = { ...this.accounts[index], ...data};
+        this.accounts = [
+            ...this.accounts.slice(0, index),
+            updatedAccount,
+            ...this.accounts.slice(index + 1)
+        ];
+        return updatedAccount;
+    }
+
+    withdraw(id: string, amount: number): { newBalance: number } {
+        const index = this.accounts.findIndex(account => account.id === id);
+        const current_balance = this.accounts[index].balance.amount;
         if(current_balance < amount) {
             throw new NotAcceptableException('Amount exceeds the current balance of the account.')
         }
-        account.balance.amount -= amount;
-        return `${amount} withdrawn successfully.`
+        const updatedAccount = { ...this.accounts[index]};
+        updatedAccount.balance.amount = current_balance - amount;
+        this.accounts = [
+            ...this.accounts.slice(0, index),
+            updatedAccount,
+            ...this.accounts.slice(index + 1)
+        ];
+        // return structured data that the client can use (vs a success message)
+        return { newBalance: updatedAccount.balance.amount };
     }
 
-    deposit(id: string, amount: number) {
-        const account = this.findByID(id);
-        account.balance.amount += amount;
-        return `${amount} deposited successfully.`
+    deposit(id: string, amount: number): { newBalance: number } {
+        const index = this.accounts.findIndex(account => account.id === id);
+        const current_balance = this.accounts[index].balance.amount;
+        const updatedAccount = { ...this.accounts[index]};
+        updatedAccount.balance.amount = current_balance + amount;
+        this.accounts = [
+            ...this.accounts.slice(0, index),
+            updatedAccount,
+            ...this.accounts.slice(index + 1)
+        ];
+        return { newBalance: updatedAccount.balance.amount };
     }
 }

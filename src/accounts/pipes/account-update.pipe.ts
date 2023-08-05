@@ -1,10 +1,10 @@
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
-import { PostAccountDto } from '../dtos/post-account.dto';
+import { AccountDto } from '../dtos/account.dto';
 import { isEmailAddress } from './account.pipe';
 
 @Injectable()
 export class AccountUpdateValidationPipe implements PipeTransform {
-  transform(value: Partial<PostAccountDto>) {
+  transform(value: Partial<AccountDto>) {
     const allowedFields = ['given_name', 'family_name', 'email_address'];
 
     for (const field of Object.keys(value)) {

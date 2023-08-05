@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Transaction } from './models/transaction.model';
+import { TransactionDto } from './dtos/transaction.dto';
 
 @Injectable()
 export class TransactionsService {
-    private transactions: Transaction[] = [];
+    private transactions: TransactionDto[] = [];
 
-    findAll(): Transaction[] {
+    findAll(): TransactionDto[] {
         return this.transactions;
     }
 
@@ -17,17 +17,17 @@ export class TransactionsService {
         return transactions;
     }
 
-    deposit(data: Transaction) {
+    deposit(data: TransactionDto) {
         this.transactions.push(data);
         return `${data.amount_money.amount} deposited successfully.`
     }
 
-    withdraw(data: Transaction) {
+    withdraw(data: TransactionDto) {
         this.transactions.push(data);
         return `${data.amount_money.amount} withdrawn successfully.`
     }
 
-    send(data: Transaction) {
+    send(data: TransactionDto) {
         this.transactions.push(data);
         return `${data.amount_money.amount} successfully sent.`;
     }
