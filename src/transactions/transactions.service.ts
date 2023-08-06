@@ -19,16 +19,16 @@ export class TransactionsService {
 
     deposit(data: TransactionDto) {
         this.transactions.push(data);
-        return `${data.amount_money.amount} deposited successfully.`
+        return data;
     }
 
     withdraw(data: TransactionDto) {
         this.transactions.push(data);
-        return `${data.amount_money.amount} withdrawn successfully.`
+        return data;
     }
 
     send(data: TransactionDto) {
         this.transactions.push(data);
-        return `${data.amount_money.amount} successfully sent.`;
+        return data;
     }
 }

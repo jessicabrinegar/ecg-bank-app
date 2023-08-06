@@ -1,10 +1,8 @@
 import { Controller, Get, Post, Body, NotAcceptableException, Param, ParseUUIDPipe } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { AccountsService } from 'src/accounts/accounts.service';
-import { randomUUID } from 'crypto';
 import { TransactionDto } from './dtos/transaction.dto';
 import { TransactionValidationPipe } from './pipes/transaction-validation.pipe';
-import { SendValidationPipe } from './pipes/send-validation.pipe';
 
 @Controller('accounts/:id/transactions')
 export class TransactionsController {
@@ -24,14 +22,8 @@ export class TransactionsController {
         if (body.target_account_id) {
             body.target_account_id = null;
         }
-        this.accountService.deposit(id, body.amount_money.amount);
-        const transaction: TransactionDto = {
-            id: randomUUID(),
-            // target_account_id: null,
-            ...body,
-            account_id: id,
-        };
-        return this.transactionService.deposit(transaction);
+        this.accountService.updateBalance(id, body.amount_money.amount, 'deposit');
+        return this.transactionService.deposit(body);
     }
 
     @Post('withdraw')
@@ -39,28 +31,15 @@ export class TransactionsController {
         if (body.target_account_id) {
             body.target_account_id = null;
         }
-        this.accountService.withdraw(id, body.amount_money.amount);
-        const transaction: TransactionDto = {
-            id: randomUUID(),
-            ...body,
-            account_id: id,
-        };
-        return this.transactionService.withdraw(transaction);
+        this.accountService.updateBalance(id, body.amount_money.amount, 'withdraw');
+        return this.transactionService.withdraw(body);
     }
 
     @Post('send')
-    send(@Param('id', new ParseUUIDPipe()) id: string, @Body(TransactionValidationPipe, SendValidationPipe) body: TransactionDto) {
+    send(@Param('id', new ParseUUIDPipe()) id: string, @Body(TransactionValidationPipe) body: TransactionDto) {
         const amount = body.amount_money.amount;
-        if (amount < 1 || amount > 1000) {
-            throw new NotAcceptableException('Amount sent must be between 1 and 1,000 USD.')
-        }
-        this.accountService.withdraw(id, amount);
-        this.accountService.deposit(body.target_account_id, amount);
-        const transaction: TransactionDto = {
-            id: randomUUID(),
-            ...body,
-            account_id: id,
-        };
-        return this.transactionService.send(transaction);
+        this.accountService.updateBalance(id, amount, 'withdraw');
+        this.accountService.updateBalance(body.target_account_id, amount, 'deposit');
+        return this.transactionService.send(body);
     }
 }

@@ -23,9 +23,12 @@ export class AccountsService {
         return account;
     }
 
-    update(id: string, data: Partial<AccountDto>): AccountDto {
-        // immutable data should not be changed. create & return new version of the data
+    updateAccount(id: string, data: Partial<AccountDto>): AccountDto {
+        // data should not be changed (immutable). create & return new version of the data
         const index = this.accounts.findIndex(account => account.id === id);
+        if (index === -1) {
+            throw new NotFoundException(`No account found with ID ${id}`);
+        }
         const updatedAccount = { ...this.accounts[index], ...data};
         this.accounts = [
             ...this.accounts.slice(0, index),
@@ -35,33 +38,27 @@ export class AccountsService {
         return updatedAccount;
     }
 
-    withdraw(id: string, amount: number): { newBalance: number } {
+    updateBalance(id: string, amount: number, type: string): { newBalance: number } {
         const index = this.accounts.findIndex(account => account.id === id);
-        const current_balance = this.accounts[index].balance.amount;
-        if(current_balance < amount) {
-            throw new NotAcceptableException('Amount exceeds the current balance of the account.')
+        if (index === -1) {
+            throw new NotFoundException(`No account found with ID ${id}`);
         }
-        const updatedAccount = { ...this.accounts[index]};
-        updatedAccount.balance.amount = current_balance - amount;
-        this.accounts = [
-            ...this.accounts.slice(0, index),
-            updatedAccount,
-            ...this.accounts.slice(index + 1)
-        ];
-        // return structured data that the client can use (vs a success message)
-        return { newBalance: updatedAccount.balance.amount };
-    }
-
-    deposit(id: string, amount: number): { newBalance: number } {
-        const index = this.accounts.findIndex(account => account.id === id);
         const current_balance = this.accounts[index].balance.amount;
-        const updatedAccount = { ...this.accounts[index]};
-        updatedAccount.balance.amount = current_balance + amount;
+        const account = { ...this.accounts[index]};
+        if (type === 'withdraw') {
+            if (current_balance < amount) {
+                throw new NotAcceptableException('Amount exceeds the current balance of the account.')
+            }
+            account.balance.amount = current_balance - amount;
+        }
+        else if (type === 'deposit') {
+            account.balance.amount = current_balance + amount;
+        }
         this.accounts = [
             ...this.accounts.slice(0, index),
-            updatedAccount,
+            account,
             ...this.accounts.slice(index + 1)
         ];
-        return { newBalance: updatedAccount.balance.amount };
+        return { newBalance: account.balance.amount };
     }
 }
