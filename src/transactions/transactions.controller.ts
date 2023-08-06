@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, NotAcceptableException, Param, ParseUUIDPi
 import { TransactionsService } from './transactions.service';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { TransactionDto } from './dtos/transaction.dto';
-import { TransactionValidationPipe } from './pipes/transaction-validation.pipe';
+import { TransactionValidationPipe } from './pipes/transaction.pipe';
 
 @Controller('accounts/:id/transactions')
 export class TransactionsController {
