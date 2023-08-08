@@ -1,5 +1,5 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { AccountDto } from './dtos/account.dto';
+import { AccountDto, Balance } from './dtos/account.dto';
 
 
 @Injectable()
@@ -25,40 +25,37 @@ export class AccountsService {
 
     updateAccount(id: string, data: Partial<AccountDto>): AccountDto {
         // data should not be changed (immutable). create & return new version of the data
-        const index = this.accounts.findIndex(account => account.id === id);
-        if (index === -1) {
+        const accountToUpdate = this.accounts.find(account => account.id === id);
+        if (!accountToUpdate) {
             throw new NotFoundException(`No account found with ID ${id}`);
         }
-        const updatedAccount = { ...this.accounts[index], ...data};
-        this.accounts = [
-            ...this.accounts.slice(0, index),
-            updatedAccount,
-            ...this.accounts.slice(index + 1)
-        ];
+        const updatedAccount = { ...accountToUpdate, ...data};
+        this.accounts = this.accounts.map(account => 
+            account.id === id ? updatedAccount : account
+        );
         return updatedAccount;
     }
 
-    updateBalance(id: string, amount: number, type: string): { newBalance: number } {
-        const index = this.accounts.findIndex(account => account.id === id);
-        if (index === -1) {
+    updateBalance(id: string, amount: number, type: 'deposit' | 'withdraw'): { newBalance: number } {
+        const accountToUpdate = this.accounts.find(account => account.id === id);
+        if (!accountToUpdate) {
             throw new NotFoundException(`No account found with ID ${id}`);
         }
-        const current_balance = this.accounts[index].balance.amount;
-        const account = { ...this.accounts[index]};
+        const currentBalance = accountToUpdate.balance;
+        let updatedBalance: Balance;
         if (type === 'withdraw') {
-            if (current_balance < amount) {
+            if (currentBalance.amount < amount) {
                 throw new NotAcceptableException('Amount exceeds the current balance of the account.')
             }
-            account.balance.amount = current_balance - amount;
+            updatedBalance = {...currentBalance, amount: currentBalance.amount - amount};
         }
         else if (type === 'deposit') {
-            account.balance.amount = current_balance + amount;
+            updatedBalance = {...currentBalance, amount: currentBalance.amount + amount};
         }
-        this.accounts = [
-            ...this.accounts.slice(0, index),
-            account,
-            ...this.accounts.slice(index + 1)
-        ];
-        return { newBalance: account.balance.amount };
+        const updatedAccount = { ...accountToUpdate, updatedBalance }
+        this.accounts = this.accounts.map(account => 
+            account.id === id ? updatedAccount : account
+        );
+        return { newBalance: updatedBalance.amount };
     }
 }
