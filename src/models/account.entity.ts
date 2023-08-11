@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Transaction } from './transaction.entity';
 
 export interface Balance {
     amount: number;
@@ -24,4 +25,10 @@ export class Account {
 
     @Column('jsonb')
     balance: Balance;
+
+    @OneToMany(() => Transaction, transaction => transaction.account)
+    transactions: Transaction[];
+
+    @OneToMany(() => Transaction, transaction => transaction.targetAccount)
+    targetTransactions: Transaction[];
 }

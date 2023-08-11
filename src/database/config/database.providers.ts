@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import config from './ormconfig';
+import { config } from './ormconfig';
 
 /**
  * Database provider
@@ -7,6 +7,11 @@ import config from './ormconfig';
  * contains database factory provider
  * we use TypeOrmModule here and add connection
  */
-export const DatabaseProvider = TypeOrmModule.forRootAsync({
-    useFactory: () => config,
-  });
+/* forRootAsync is helpful when you need an async setup, 
+ such as needing to fetch config data from external resources
+ E.g., export const DatabaseProvider = TypeOrmModule.forRootAsync({
+     useFactory: () => config,
+ }); */
+
+export const DatabaseProvider = TypeOrmModule.forRoot(config);
+  
