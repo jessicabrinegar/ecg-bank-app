@@ -2,7 +2,7 @@ import { DataSourceOptions, DataSource } from 'typeorm';
 import { Account } from 'src/models/account.entity';
 import { Transaction } from 'src/models/transaction.entity';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { Audit } from 'src/models/audit.entity';
+import { AuditTrail } from 'src/models/audit.entity';
 
 export const config: DataSourceOptions = {
     type: 'postgres',
@@ -11,7 +11,7 @@ export const config: DataSourceOptions = {
     username: 'apiuser',
     password: 'dbuser123',
     database: 'bank',
-    entities: [Account, Transaction, Audit],
+    entities: [Account, Transaction, AuditTrail],
     subscribers: [],
     migrations: [__dirname + "/../migrations/*.{ts, js}"],
     migrationsTransactionMode: 'each',

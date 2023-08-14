@@ -1,8 +1,9 @@
 import { Account } from 'src/models/account.entity';
-import { Column, Entity, PrimaryGeneratedColumn, Timestamp, Transaction } from 'typeorm';
+import { Transaction } from './transaction.entity';
+import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 
 @Entity()
-export class Audit {
+export class AuditTrail {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
