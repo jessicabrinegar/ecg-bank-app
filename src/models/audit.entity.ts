@@ -1,7 +1,7 @@
 import { Account } from 'src/models/account.entity';
 import { Column, Entity, PrimaryGeneratedColumn, Timestamp, Transaction } from 'typeorm';
 
-@Entity({ name: 'audit', schema: 'audit' })
+@Entity()
 export class Audit {
     @PrimaryGeneratedColumn('uuid')
     id: string;

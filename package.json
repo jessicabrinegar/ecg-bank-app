@@ -21,13 +21,15 @@
     "typeorm": "typeorm-ts-node-esm",
     "migration": "ts-node ./node_modules/typeorm/cli -f ./src/database/config/ormconfig.ts migration:run",
     "migration:undo": "ts-node ./node_modules/typeorm/cli -f ./src/database/config/ormconfig.ts migration:revert",
-    "migration:create": "tts-node ./node_modules/typeorm/cli -f ./src/database/config/ormconfig.ts migration:create -n"
+    "migration:create": "tts-node ./node_modules/typeorm/cli -f ./src/database/config/ormconfig.ts migration:create -n",
+    "start:docker": "(npm run migration) & nest start --watch"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^10.0.0",
+    "pg": "^8.11.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.17",
