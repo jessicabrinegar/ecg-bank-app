@@ -14,12 +14,13 @@ export class AccountsController {
 
     @Get("/:id")
     findById(@Param('id', new ParseUUIDPipe()) id: string): Promise<AccountDto> {
+        this.accountsService.sayHello()
         return this.accountsService.findById(id);
     }
 
     @Post()
-    create(@Body(AccountValidationPipe) body: AccountDto) {
-        return this.accountsService.create(body);
+    createAccount(@Body() body: AccountDto) {
+        return this.accountsService.createAccount(body);
     }
 
     @Patch("/:id")

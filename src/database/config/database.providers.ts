@@ -15,3 +15,11 @@ import { config } from './ormconfig';
 
 export const DatabaseProvider = TypeOrmModule.forRoot(config);
   
+// export const DatabaseProvider = {
+//     provide: 'DATA_SOURCE',
+//     useFactory: async () => {
+//         config
+//     const dataSource = new DataSource(config);
+//     return dataSource.initialize();
+//     },
+// };

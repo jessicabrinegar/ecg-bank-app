@@ -3,6 +3,7 @@ import { Account } from 'src/accounts/models/account.entity';
 import { Transaction } from 'src/transactions/models/transaction.entity';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AuditTrail } from 'src/audit-trails/models/audit.entity';
+// import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export const config: DataSourceOptions = {
     type: 'postgres',

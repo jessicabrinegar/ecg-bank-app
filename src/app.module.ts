@@ -2,12 +2,16 @@ import { Module } from '@nestjs/common';
 import { AccountsModule } from './accounts/accounts.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { DatabaseModule } from './database/database.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
+// import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+// import { TypeOrmModule } from '@nestjs/typeorm';
+// import { Account } from './accounts/models/account.entity';
+// import { Transaction } from './transactions/models/transaction.entity';
+// import { AuditTrail } from './audit-trails/models/audit.entity';
 
 @Module({
-  imports: [EventEmitterModule.forRoot(), DatabaseModule, AccountsModule, TransactionsModule],
+  imports: [DatabaseModule, AccountsModule, TransactionsModule],
   controllers: [AppController],
   providers: [AppService],
 })
