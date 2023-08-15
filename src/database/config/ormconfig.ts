@@ -16,7 +16,7 @@ export const config: DataSourceOptions = {
     migrations: [__dirname + "/../migrations/*.{ts, js}"],
     migrationsTransactionMode: 'each',
     namingStrategy: new SnakeNamingStrategy(),
-    synchronize: true,
+    synchronize: false,
     dropSchema: false,
 };
 // data source initialized for migration purpose.

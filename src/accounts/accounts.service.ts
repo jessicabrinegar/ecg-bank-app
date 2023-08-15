@@ -1,61 +1,53 @@
-import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { AccountDto, Balance } from './models/account.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { AccountDto } from './models/account.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Account } from './models/account.entity';
+import { Repository } from 'typeorm';
 
 
 @Injectable()
 export class AccountsService {
     private accounts: AccountDto[] = [];
 
-    findAll(): AccountDto[] {
-        return this.accounts; 
+    constructor(
+        @InjectRepository(Account)
+        private accountsRepository: Repository<Account>,
+    ) {}
+
+    async findAll(): Promise<AccountDto[]> {
+        return this.accountsRepository.find();
     }
 
-    findById(id: string) {
-        const account = this.accounts.find((account) => account.id === id);
-        if (!account) {
-            throw new NotFoundException(`No account found with ID ${id}.`)
-        }
-        return account;
+    async findById(id: string): Promise<AccountDto | null> {
+        return this.accountsRepository.findOneBy({ id: id });
     }
 
-    create(account: AccountDto): AccountDto {
-        this.accounts.push(account);
-        return account;
+    async create(account: AccountDto): Promise<AccountDto> {
+        return this.accountsRepository.create(account);
     }
 
-    updateAccount(id: string, data: Partial<AccountDto>): AccountDto {
-        // data should not be changed (immutable). create & return new version of the data
-        const accountToUpdate = this.accounts.find(account => account.id === id);
-        if (!accountToUpdate) {
-            throw new NotFoundException(`No account found with ID ${id}`);
-        }
-        const updatedAccount = { ...accountToUpdate, ...data};
-        this.accounts = this.accounts.map(account => 
-            account.id === id ? updatedAccount : account
-        );
-        return updatedAccount;
+    async updateAccount(id: string, data: Partial<AccountDto>): Promise<AccountDto> {
+        await this.accountsRepository.update(id, {...data});
+        return this.accountsRepository.findOneBy({ id: id });
     }
 
-    updateBalance(id: string, amount: number, type: 'deposit' | 'withdraw'): { newBalance: number } {
-        const accountToUpdate = this.accounts.find(account => account.id === id);
-        if (!accountToUpdate) {
-            throw new NotFoundException(`No account found with ID ${id}`);
-        }
-        const currentBalance = accountToUpdate.balance;
-        let updatedBalance: Balance;
+    async updateBalance(id: string, amount: number, type: 'deposit' | 'withdraw'): Promise<{ newBalance: number }> {
+        const account = await this.accountsRepository.findOneBy({ id: id });
+        let updatedAmount: number;
         if (type === 'withdraw') {
-            if (currentBalance.amount < amount) {
-                throw new NotAcceptableException('Amount exceeds the current balance of the account.')
+            const currentBalance = account.balance.amount;
+            if (currentBalance < amount) {
+                throw new BadRequestException('Insufficient funds.')
             }
-            updatedBalance = {...currentBalance, amount: currentBalance.amount - amount};
+            updatedAmount = currentBalance - amount;
         }
         else if (type === 'deposit') {
-            updatedBalance = {...currentBalance, amount: currentBalance.amount + amount};
+            const currentBalance = account.balance.amount;
+            updatedAmount = currentBalance + amount;
         }
-        const updatedAccount = { ...accountToUpdate, updatedBalance }
-        this.accounts = this.accounts.map(account => 
-            account.id === id ? updatedAccount : account
-        );
-        return { newBalance: updatedBalance.amount };
+        const updatedBalance = {amount: updatedAmount, currency: account.balance.currency};
+        await this.accountsRepository.update(id, {balance: updatedBalance});
+
+        return { newBalance: updatedAmount };
     }
 }

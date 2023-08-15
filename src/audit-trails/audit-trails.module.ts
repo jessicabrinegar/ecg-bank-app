@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-// import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuditTrail } from './models/audit.entity';
 
 @Module({
-    imports: [],
+    imports: [TypeOrmModule.forFeature([AuditTrail])],
     controllers: [],
     providers: [],
 })

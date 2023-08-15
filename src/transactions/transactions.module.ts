@@ -5,11 +5,11 @@ import { AllTransactionsController } from './get-all-transactions.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountsModule } from 'src/accounts/accounts.module';
 import { Transaction } from 'src/transactions/models/transaction.entity';
-import { Audit } from 'src/audit-trails/models/audit.entity';
+import { AuditTrail } from 'src/audit-trails/models/audit.entity';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([Transaction, Audit]),AccountsModule],
+  imports: [TypeOrmModule.forFeature([Transaction, AuditTrail]), AccountsModule],
   controllers: [TransactionsController, AllTransactionsController],
   providers: [TransactionsService],
   exports: [TransactionsService]
