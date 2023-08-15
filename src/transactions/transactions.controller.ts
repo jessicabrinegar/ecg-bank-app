@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, NotAcceptableException, Param, ParseUUIDPipe } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { AccountsService } from 'src/accounts/accounts.service';
-import { TransactionDto } from './dtos/transaction.dto';
+import { TransactionDto } from './models/transaction.dto';
 import { TransactionValidationPipe } from './pipes/transaction.pipe';
 
 @Controller('accounts/:id/transactions')

@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsUUID, IsJSON, IsDate } from 'class-validator';
-import { Account } from 'src/models/account.entity';
-import { Transaction } from 'src/models/transaction.entity';
+import { Account } from 'src/accounts/models/account.entity';
+import { Transaction } from 'src/transactions/models/transaction.entity';
 
 enum Action {
     CREATE = 'CREATE',

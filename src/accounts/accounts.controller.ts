@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, ParseUUIDPipe, Patch } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
-import { AccountDto } from './dtos/account.dto';
+import { AccountDto } from './models/account.dto';
 import { AccountValidationPipe } from './pipes/account.pipe';
 
 @Controller('accounts')

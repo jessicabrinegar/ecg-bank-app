@@ -1,5 +1,5 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { AccountDto, Balance } from './dtos/account.dto';
+import { AccountDto, Balance } from './models/account.dto';
 
 
 @Injectable()

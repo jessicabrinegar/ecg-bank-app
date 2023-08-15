@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Account } from './account.entity';
+import { Account } from '../../accounts/models/account.entity';
 
 export interface AmountMoney {
     amount: number;

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { TransactionDto } from './dtos/transaction.dto';
+import { TransactionDto } from './models/transaction.dto';
 
 @Injectable()
 export class TransactionsService {

@@ -1,7 +1,7 @@
 import { Injectable, PipeTransform, BadRequestException, Inject, ArgumentMetadata, ConflictException } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { TransactionDto } from '../dtos/transaction.dto';
-import { AmountMoney } from "../dtos/transaction.dto";
+import { TransactionDto } from '../models/transaction.dto';
+import { AmountMoney } from "../models/transaction.dto";
 import { extractIdFromUrl, isUUID } from 'src/utils/helpers.util';
 import { randomUUID } from 'crypto';
 

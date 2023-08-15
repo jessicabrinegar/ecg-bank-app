@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Transaction } from './transaction.entity';
+import { Transaction } from '../../transactions/models/transaction.entity';
 
 export interface Balance {
     amount: number;

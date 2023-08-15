@@ -2,9 +2,9 @@
 import { Injectable, PipeTransform, BadRequestException, Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { randomUUID } from 'crypto';
-import { AccountDto } from '../dtos/account.dto';
+import { AccountDto } from '../models/account.dto';
 import { isEmailAddress } from '../../utils/helpers.util';
-import { Balance } from '../dtos/account.dto';
+import { Balance } from '../models/account.dto';
 
 @Injectable()
 export class AccountValidationPipe implements PipeTransform {

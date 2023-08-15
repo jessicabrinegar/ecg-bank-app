@@ -1,5 +1,5 @@
-import { Account } from 'src/models/account.entity';
-import { Transaction } from './transaction.entity';
+import { Account } from 'src/accounts/models/account.entity';
+import { Transaction } from '../../transactions/models/transaction.entity';
 import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 
 @Entity()

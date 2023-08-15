@@ -1,8 +1,8 @@
 import { DataSourceOptions, DataSource } from 'typeorm';
-import { Account } from 'src/models/account.entity';
-import { Transaction } from 'src/models/transaction.entity';
+import { Account } from 'src/accounts/models/account.entity';
+import { Transaction } from 'src/transactions/models/transaction.entity';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { AuditTrail } from 'src/models/audit.entity';
+import { AuditTrail } from 'src/audit-trails/models/audit.entity';
 
 export const config: DataSourceOptions = {
     type: 'postgres',
