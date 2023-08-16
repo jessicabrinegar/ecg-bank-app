@@ -2,18 +2,18 @@ import { Controller, Get, Post, Body, Param, ParseUUIDPipe, Patch } from '@nestj
 import { AccountsService } from './accounts.service';
 import { AccountDto } from './models/account.dto';
 import { AccountValidationPipe } from './pipes/account.pipe';
-// import { Account } from './models/account.entity';
+import { Account } from './models/account.entity';
 
 @Controller('accounts')
 export class AccountsController {
     constructor(private accountsService: AccountsService) {}
     @Get()
-    findAll(): Promise<AccountDto[]> {
+    findAll(): Promise<Account[]> {
         return this.accountsService.findAll();
     }
 
     @Get("/:id")
-    findById(@Param('id', new ParseUUIDPipe()) id: string): Promise<AccountDto> {
+    findById(@Param('id', new ParseUUIDPipe()) id: string): Promise<Account> {
         this.accountsService.sayHello()
         return this.accountsService.findById(id);
     }

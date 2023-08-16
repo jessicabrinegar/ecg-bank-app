@@ -18,11 +18,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "typeorm-ts-node-esm",
-    "migration": "ts-node ./node_modules/typeorm/cli -f ./src/database/config/ormconfig.ts migration:run",
-    "migration:undo": "ts-node ./node_modules/typeorm/cli -f ./src/database/config/ormconfig.ts migration:revert",
-    "migration:create": "tts-node ./node_modules/typeorm/cli -f ./src/database/config/ormconfig.ts migration:create -n",
-    "start:docker": "(npm run migration) & nest start --watch"
+    "typeorm:cli": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli -d src/database/config/ormconfig-migrations.ts",
+    "migration:generate": "npm run typeorm:cli -- migration:generate",
+    "migration:create": "npm run typeorm:cli -- migration:create",
+    "migration:run": "npm run typeorm:cli -- migration:run",
+    "migration:revert": "npm run typeorm:cli -- migration:revert",
+    "start:docker": "(npm run migration:run) & nest start --watch"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

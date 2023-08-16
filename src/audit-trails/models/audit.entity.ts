@@ -2,7 +2,7 @@ import { Account } from 'src/accounts/models/account.entity';
 import { Transaction } from '../../transactions/models/transaction.entity';
 import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'audit-trail', schema: 'audit'})
 export class AuditTrail {
     @PrimaryGeneratedColumn('uuid')
     id: string;

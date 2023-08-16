@@ -1,35 +1,44 @@
-import { IsJSON, IsNotEmpty, IsNumber, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { IsEnum, IsJSON, IsEmpty, IsNumber, IsString, IsUUID, ValidateNested, IsEmail, IsPositive } from 'class-validator';
 import { Type } from 'class-transformer';
 
+export enum Currency {
+    USD = 'USD',
+    EUR = 'EUR',
+    GBP = 'GBP',
+    JPY = 'JPY',
+    CNY = 'CNY'
+}
+
 export class Balance {
-    @IsNotEmpty()
+
     @IsNumber()
+    @IsPositive()
     amount: number;
-    @IsNotEmpty()
-    @IsString()
-    currency: string;
+
+    @IsEnum(Currency)
+    currency: Currency;
 }
 
 export class AccountDto {
     @IsUUID('4')
-    @IsNotEmpty()
     id: string;
 
-    @IsNotEmpty()
+    @IsEmpty()
     @IsString()
     given_name: string; 
 
-    @IsNotEmpty()
+    @IsEmpty()
     @IsString()
     family_name: string;
 
-    @IsNotEmpty()
-    @IsString()
+    @IsEmpty()
+    @IsEmail()
     email_address: string;
 
     @IsString()
     note: string | null;
 
+    @IsEmpty()
     @IsJSON()
     @ValidateNested()
     @Type(()=> Balance)

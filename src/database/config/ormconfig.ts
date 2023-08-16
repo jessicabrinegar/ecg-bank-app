@@ -1,9 +1,8 @@
 import { DataSourceOptions, DataSource } from 'typeorm';
-import { Account } from 'src/accounts/models/account.entity';
-import { Transaction } from 'src/transactions/models/transaction.entity';
+import { Account } from '../../accounts/models/account.entity';
+import { Transaction } from '../../transactions/models/transaction.entity';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { AuditTrail } from 'src/audit-trails/models/audit.entity';
-// import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { AuditTrail } from '../../audit-trails/models/audit.entity';
 
 export const config: DataSourceOptions = {
     type: 'postgres',
@@ -14,11 +13,12 @@ export const config: DataSourceOptions = {
     database: 'bank',
     entities: [Account, Transaction, AuditTrail],
     subscribers: [],
-    migrations: [__dirname + "/../migrations/*.{ts, js}"],
+    migrations: [__dirname + "/../migrations/*.{ts,js}"],
     migrationsTransactionMode: 'each',
     namingStrategy: new SnakeNamingStrategy(),
     synchronize: false,
     dropSchema: false,
 };
 // data source initialized for migration purpose.
-export default new DataSource(config);
+const dataSource = new DataSource(config);
+export default dataSource;

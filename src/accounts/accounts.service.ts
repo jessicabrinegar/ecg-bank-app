@@ -12,11 +12,11 @@ export class AccountsService {
         private accountsRepository: AccountsRepository,
     ) {}
 
-    findAll(): Promise<AccountDto[]> {
+    findAll(): Promise<Account[]> {
         return this.accountsRepository.find();
     }
 
-    findById(id: string): Promise<AccountDto | null> {
+    findById(id: string): Promise<Account | null> {
         return this.accountsRepository.findOneBy({id: id});
     }
 
@@ -29,7 +29,7 @@ export class AccountsService {
         return this.accountsRepository.sayHello();
     }
 
-    async updateAccount(id: string, data: Partial<AccountDto>): Promise<AccountDto> {
+    async updateAccount(id: string, data: Partial<AccountDto>): Promise<Account> {
         await this.accountsRepository.update(id, {...data});
         const account = await this.accountsRepository.findOneBy({ id: id });
         return account;

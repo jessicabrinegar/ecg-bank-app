@@ -6,7 +6,7 @@ export interface Balance {
     currency: string;
 }
 
-@Entity()
+@Entity({ name: 'account', schema: 'bank'})
 export class Account {
     @PrimaryGeneratedColumn('uuid')
     id: string;
