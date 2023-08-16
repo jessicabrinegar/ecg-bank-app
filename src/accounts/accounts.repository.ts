@@ -1,11 +1,15 @@
 import { Repository } from 'typeorm';
 import { Account } from './models/account.entity';
-// import { AccountDto } from './models/account.dto';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
-
+@Injectable()
 export class AccountsRepository extends Repository<Account> {
 
-    sayHello() {
-        console.log('hello');
+    constructor(
+        @InjectRepository(Account)
+        repo: Repository<Account>
+    ) {
+        super(repo.target, repo.manager, repo.queryRunner);
     }
 }

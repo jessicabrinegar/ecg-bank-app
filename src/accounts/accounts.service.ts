@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AccountDto } from './models/account.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './models/account.entity';
 import { AccountsRepository } from './accounts.repository';
 
@@ -8,7 +7,6 @@ import { AccountsRepository } from './accounts.repository';
 export class AccountsService {
 
     constructor(
-        @InjectRepository(Account)
         private accountsRepository: AccountsRepository,
     ) {}
 
@@ -23,10 +21,6 @@ export class AccountsService {
     createAccount(account: AccountDto): Promise<Account> {
         const newAccount = this.accountsRepository.create(account);
         return this.accountsRepository.save(newAccount);
-    }
-
-    sayHello(){
-        return this.accountsRepository.sayHello();
     }
 
     async updateAccount(id: string, data: Partial<AccountDto>): Promise<Account> {

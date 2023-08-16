@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, ParseUUIDPipe, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseUUIDPipe, Patch, BadRequestException } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { AccountDto } from './models/account.dto';
-import { AccountValidationPipe } from './pipes/account.pipe';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 import { Account } from './models/account.entity';
 
 @Controller('accounts')
@@ -14,7 +15,6 @@ export class AccountsController {
 
     @Get("/:id")
     findById(@Param('id', new ParseUUIDPipe()) id: string): Promise<Account> {
-        this.accountsService.sayHello()
         return this.accountsService.findById(id);
     }
 
@@ -24,10 +24,22 @@ export class AccountsController {
     }
 
     @Patch("/:id")
-    update(
+    async update(
         @Param('id', new ParseUUIDPipe()) id: string, 
-        @Body(AccountValidationPipe) body: Partial<AccountDto>
+        @Body() body: Partial<AccountDto>
     ){
+        if (body.balance !== undefined) {
+            throw new BadRequestException('Update to balance is unauthorized.')
+        }
+        // Convert the partial object to a complete AccountDto instance
+        const accountDto = plainToClass(AccountDto, body);
+        // Validate the complete object using class-validator
+        const errors = await validate(accountDto, {skipMissingProperties: true});
+
+        if (errors.length) {
+            const message = errors.map((err) => err.constraints)
+            throw new BadRequestException(message);
+        }
         return this.accountsService.updateAccount(id, body);
     }
 }
