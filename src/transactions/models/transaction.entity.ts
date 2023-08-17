@@ -12,16 +12,19 @@ export class Transaction {
     id: string;
 
     @Column({ type: 'text', nullable: true })
-    note: string;
+    note: string | null;
 
     @Column('jsonb')
     amount_money: AmountMoney;
 
-    @ManyToOne(() => Account, account => account.transactions)
-    @JoinColumn({ name: 'account_id' })
+    @ManyToOne(type => Account, {
+        eager: true,
+        onDelete: "CASCADE"
+    })
+    @JoinColumn({name: 'account_id'})
     account: Account;
   
-    @ManyToOne(() => Account, account => account.targetTransactions)
-    @JoinColumn({ name: 'target_account_id' })
-    targetAccount: Account;
+    @ManyToOne(type => Account)
+    @JoinColumn({name: 'target_account_id'})
+    target_account: Account;
 }

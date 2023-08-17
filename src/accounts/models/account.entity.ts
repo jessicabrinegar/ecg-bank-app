@@ -29,6 +29,6 @@ export class Account {
     @OneToMany(() => Transaction, transaction => transaction.account)
     transactions: Transaction[];
 
-    @OneToMany(() => Transaction, transaction => transaction.targetAccount)
+    @OneToMany(() => Transaction, transaction => transaction.target_account)
     targetTransactions: Transaction[];
 }

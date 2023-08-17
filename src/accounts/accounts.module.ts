@@ -12,7 +12,7 @@ import { AccountsRepository } from './accounts.repository';
   imports: [TypeOrmModule.forFeature([Account, AuditTrail]), DatabaseModule],
   controllers: [AccountsController],
   providers: [AccountsService, AccountsRepository],
-  exports: [AccountsService],
+  exports: [AccountsService, AccountsRepository],
 })
 export class AccountsModule {}
 

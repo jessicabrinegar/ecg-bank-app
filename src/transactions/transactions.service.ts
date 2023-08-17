@@ -1,34 +1,32 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { TransactionDto } from './models/transaction.dto';
+import { Repository } from 'typeorm';
+import { Transaction } from './models/transaction.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Account } from 'src/accounts/models/account.entity';
+import { TransactionsRepository } from './transactions.repository';
+import { AccountsRepository } from 'src/accounts/accounts.repository';
 
 @Injectable()
 export class TransactionsService {
-    private transactions: TransactionDto[] = [];
+    
+    constructor(
+        private transactionsRepo: TransactionsRepository
+    ) {}
 
-    findAll(): TransactionDto[] {
-        return this.transactions;
+    async findAll(): Promise<Transaction[]> {
+        return await this.transactionsRepo.findAll();
     }
 
-    findAllInAccount(id: string) {
-        const transactions = this.transactions.filter((entry) => entry.account_id === id);
+    async findAllInAccount(id: string): Promise<Transaction[]> {
+        const transactions = await this.transactionsRepo.findAllInAccount(id)
         if (!transactions) {
             throw new NotFoundException(`No transactions found for account with id ${id}.`);
         }
         return transactions;
     }
 
-    deposit(data: TransactionDto) {
-        this.transactions.push(data);
-        return data;
-    }
-
-    withdraw(data: TransactionDto) {
-        this.transactions.push(data);
-        return data;
-    }
-
-    send(data: TransactionDto) {
-        this.transactions.push(data);
-        return data;
+    async newTransaction(id: string, data: TransactionDto): Promise<Transaction> {
+        return await this.transactionsRepo.newTransaction(id, data);
     }
 }
