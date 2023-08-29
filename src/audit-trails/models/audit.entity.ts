@@ -1,6 +1,6 @@
 import { Account } from 'src/accounts/models/account.entity';
 import { Transaction } from '../../transactions/models/transaction.entity';
-import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'audit-trail', schema: 'audit'})
 export class AuditTrail {
@@ -17,5 +17,5 @@ export class AuditTrail {
     new_value: Account | Transaction;
 
     @Column('timestamp')
-    modified_at: Timestamp;
+    modified_at: Date;
 }

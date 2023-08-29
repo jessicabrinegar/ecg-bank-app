@@ -1,13 +1,21 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { AccountDto } from './models/account.dto';
 import { Account } from './models/account.entity';
 import { AccountsRepository } from './accounts.repository';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { AccountEvents } from './accounts-events';
+import { AuditTrailRepository } from 'src/audit-trails/audit-trail.repository';
+import { AuditTrailDto, Entity, Action } from 'src/audit-trails/models/audit-trail.dto';
+
 
 @Injectable()
 export class AccountsService {
 
     constructor(
         private accountsRepository: AccountsRepository,
+        private auditRepository: AuditTrailRepository,
+        private eventEmitter: EventEmitter2,
+        private readonly logger: Logger
     ) {}
 
     findAll(): Promise<Account[]> {
@@ -20,7 +28,20 @@ export class AccountsService {
 
     createAccount(account: AccountDto): Promise<Account> {
         const newAccount = this.accountsRepository.create(account);
+        this.logger.log('Account created', account);
+        this.eventEmitter.emit(AccountEvents.accountCreated, newAccount);
         return this.accountsRepository.save(newAccount);
+    }
+
+    @OnEvent(AccountEvents.accountCreated)
+    handleAccountCreatedEvent(account: Account) {
+        const auditTrailEntry: AuditTrailDto = {
+            entity: Entity.ACCOUNT,
+            action: Action.CREATE,
+            new_value: account,
+            modified_at: new Date()
+        };
+        return this.auditRepository.save(auditTrailEntry);
     }
 
     async updateAccount(id: string, data: Partial<AccountDto>): Promise<Account> {
